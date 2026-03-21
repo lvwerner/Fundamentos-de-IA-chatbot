@@ -1,8 +1,6 @@
 import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage
-import os
-from dotenv import load_dotenv
 from datetime import datetime
 
 st.set_page_config(
@@ -12,8 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-load_dotenv()
-
+# ── ESTILOS GLOBAIS ───────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap');
@@ -33,12 +30,10 @@ html, body,
     background-color: #16171a !important;
     border-right: 1px solid #2d3139 !important;
 }
-
 [data-testid="stSidebar"] * {
     font-family: 'JetBrains Mono', monospace !important;
     color: #39d353 !important;
 }
-
 [data-testid="stSidebar"] .stSelectbox label,
 [data-testid="stSidebar"] .stSlider label,
 [data-testid="stSidebar"] h3,
@@ -49,7 +44,6 @@ html, body,
     text-transform: uppercase !important;
     letter-spacing: 0.12em !important;
 }
-
 [data-testid="stSidebar"] .stSelectbox > div > div,
 [data-testid="stSidebar"] [data-baseweb="select"] > div {
     background-color: #1e2024 !important;
@@ -58,16 +52,11 @@ html, body,
     color: #e2e8f0 !important;
     font-size: 0.78rem !important;
 }
-
 [data-testid="stSidebar"] [data-testid="stSlider"] [role="slider"] {
     background: #39d353 !important;
     box-shadow: 0 0 8px #39d35388 !important;
 }
-
-[data-testid="stSidebar"] hr {
-    border-color: #2d3139 !important;
-}
-
+[data-testid="stSidebar"] hr { border-color: #2d3139 !important; }
 [data-testid="stSidebar"] .stButton > button {
     background: transparent !important;
     border: 1px solid #30363d !important;
@@ -81,7 +70,6 @@ html, body,
     transition: all 0.15s ease !important;
     width: 100% !important;
 }
-
 [data-testid="stSidebar"] .stButton > button:hover {
     border-color: #39d353 !important;
     color: #39d353 !important;
@@ -103,7 +91,6 @@ html, body,
     overflow: hidden;
     box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px #ffffff08;
 }
-
 .term-titlebar {
     background: #21262d;
     border-bottom: 1px solid #30363d;
@@ -113,18 +100,10 @@ html, body,
     gap: 0.5rem;
     user-select: none;
 }
-
-.term-dot {
-    width: 13px;
-    height: 13px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-}
+.term-dot { width: 13px; height: 13px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
 .dot-red { background: #ff5f57; box-shadow: 0 0 6px #ff5f5799; }
 .dot-yel { background: #ffbd2e; box-shadow: 0 0 6px #ffbd2e99; }
 .dot-grn { background: #28c840; box-shadow: 0 0 6px #28c84099; }
-
 .term-title-text {
     flex: 1;
     text-align: center;
@@ -135,7 +114,6 @@ html, body,
     font-family: 'JetBrains Mono', monospace;
     margin-left: -2rem;
 }
-
 .term-body {
     padding: 1.6rem 1.8rem;
     min-height: 58vh;
@@ -143,6 +121,46 @@ html, body,
     overflow-y: auto;
     background: #0d1117;
 }
+
+/* ── LOGIN SCREEN ── */
+.login-body {
+    padding: 3rem 2rem;
+    background: #0d1117;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 50vh;
+    justify-content: center;
+}
+.login-ascii {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #39d353;
+    line-height: 1.4;
+    text-align: center;
+    margin-bottom: 2rem;
+    opacity: 0.85;
+}
+.login-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: #8b949e;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    width: 100%;
+    max-width: 440px;
+}
+.login-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #484f58;
+    margin-top: 0.6rem;
+    text-align: center;
+}
+.login-hint a { color: #58a6ff; text-decoration: none; }
+.login-hint a:hover { text-decoration: underline; }
 
 /* ── MESSAGES ── */
 .term-line {
@@ -152,84 +170,43 @@ html, body,
     margin-bottom: 1.6rem;
     animation: fadeIn 0.18s ease-out;
 }
-
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-
 .term-prompt-user {
-    color: #39d353;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-    font-size: 0.8rem;
-    letter-spacing: 0.02em;
+    color: #39d353; font-weight: 700; margin-bottom: 0.3rem;
+    font-size: 0.8rem; letter-spacing: 0.02em;
 }
-
 .term-prompt-ai {
-    color: #58a6ff;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-    font-size: 0.8rem;
-    letter-spacing: 0.02em;
+    color: #58a6ff; font-weight: 700; margin-bottom: 0.3rem;
+    font-size: 0.8rem; letter-spacing: 0.02em;
 }
-
 .term-tag-user {
-    display: inline-block;
-    background: #1a3a22;
-    border: 1px solid #2ea04326;
-    color: #39d353;
-    font-size: 0.6rem;
-    padding: 0 0.4rem;
-    letter-spacing: 0.08em;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-    font-weight: 600;
+    display: inline-block; background: #1a3a22; border: 1px solid #2ea04326;
+    color: #39d353; font-size: 0.6rem; padding: 0 0.4rem;
+    letter-spacing: 0.08em; margin-left: 0.5rem; vertical-align: middle; font-weight: 600;
 }
-
 .term-tag-ai {
-    display: inline-block;
-    background: #1a2a3a;
-    border: 1px solid #388bfd26;
-    color: #58a6ff;
-    font-size: 0.6rem;
-    padding: 0 0.4rem;
-    letter-spacing: 0.08em;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-    font-weight: 600;
+    display: inline-block; background: #1a2a3a; border: 1px solid #388bfd26;
+    color: #58a6ff; font-size: 0.6rem; padding: 0 0.4rem;
+    letter-spacing: 0.08em; margin-left: 0.5rem; vertical-align: middle; font-weight: 600;
 }
-
 .term-text-user {
-    color: #f0f6fc;
-    padding: 0.65rem 1.1rem;
-    border-left: 3px solid #39d353;
-    margin-left: 0.2rem;
-    background: #161b22;
-    font-size: 0.875rem;
-    line-height: 1.7;
+    color: #f0f6fc; padding: 0.65rem 1.1rem; border-left: 3px solid #39d353;
+    margin-left: 0.2rem; background: #161b22; font-size: 0.875rem; line-height: 1.7;
 }
-
 .term-text-ai {
-    color: #cdd9e5;
-    padding: 0.65rem 1.1rem;
-    border-left: 3px solid #58a6ff;
-    margin-left: 0.2rem;
-    background: #131a24;
-    white-space: pre-wrap;
-    font-size: 0.875rem;
-    line-height: 1.7;
+    color: #cdd9e5; padding: 0.65rem 1.1rem; border-left: 3px solid #58a6ff;
+    margin-left: 0.2rem; background: #131a24; white-space: pre-wrap;
+    font-size: 0.875rem; line-height: 1.7;
 }
 
-/* ── EMPTY / BOOT STATE ── */
+/* ── BOOT STATE ── */
 .term-boot {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    line-height: 2.2;
-    padding: 1rem 0;
-    color: #8b949e;
+    font-size: 0.82rem; line-height: 2.2; padding: 1rem 0; color: #8b949e;
 }
-
 .term-boot .ok   { color: #39d353; font-weight: 700; }
 .term-boot .warn { color: #e3b341; font-weight: 700; }
 .term-boot .info { color: #58a6ff; font-weight: 700; }
@@ -237,7 +214,7 @@ html, body,
 .term-boot .hint { color: #6e7681; }
 .term-boot .msg  { color: #adbac7; }
 
-/* ── INPUT AREA ── */
+/* ── INPUT ── */
 .stTextInput > div > div > input {
     background-color: #0d1117 !important;
     border: 1px solid #30363d !important;
@@ -249,21 +226,16 @@ html, body,
     caret-color: #39d353 !important;
     transition: border-color 0.15s ease !important;
 }
-
 .stTextInput > div > div > input:focus {
     border-color: #388bfd !important;
     box-shadow: 0 0 0 2px #388bfd22 !important;
     outline: none !important;
 }
-
-.stTextInput > div > div > input::placeholder {
-    color: #484f58 !important;
-}
-
+.stTextInput > div > div > input::placeholder { color: #484f58 !important; }
 .stTextInput label { display: none !important; }
 .stTextInput > div { border: none !important; box-shadow: none !important; }
 
-/* EXEC button */
+/* ── BUTTONS ── */
 .stButton > button {
     background: #21262d !important;
     border: 1px solid #39d353 !important;
@@ -278,7 +250,6 @@ html, body,
     height: 42px !important;
     transition: all 0.15s ease !important;
 }
-
 .stButton > button:hover {
     background: #2a3a2e !important;
     border-color: #46ef63 !important;
@@ -292,12 +263,10 @@ html, body,
 footer { display: none !important; }
 #MainMenu { display: none !important; }
 header[data-testid="stHeader"] { background: transparent !important; border-bottom: none !important; }
-
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #0d1117; }
 ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #484f58; }
-
 [data-testid="stAlert"] {
     background: #1a0f0f !important;
     border: 1px solid #f8514926 !important;
@@ -313,7 +282,88 @@ header[data-testid="stHeader"] { background: transparent !important; border-bott
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "api_key" not in st.session_state:
-    st.session_state.api_key = os.getenv("GROQ_API_KEY", "")
+    st.session_state.api_key = ""
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+# ══════════════════════════════════════════════════════════
+# TELA DE LOGIN — exibida enquanto não há chave válida
+# ══════════════════════════════════════════════════════════
+if not st.session_state.authenticated:
+
+    st.markdown("""
+<div class="term-window">
+  <div class="term-titlebar">
+    <span class="term-dot dot-red"></span>
+    <span class="term-dot dot-yel"></span>
+    <span class="term-dot dot-grn"></span>
+    <span class="term-title-text">groq-chat — autenticação — 80×24</span>
+  </div>
+  <div class="term-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:50vh;">
+    <div style="width:100%; max-width:440px;">
+      <pre style="font-family:JetBrains Mono,monospace; font-size:0.68rem; color:#39d353; line-height:1.35; text-align:center; margin-bottom:2rem; opacity:0.9;">
+  ██████╗ ██████╗  ██████╗  ██████╗
+ ██╔════╝ ██╔══██╗██╔═══██╗██╔═══██╗
+ ██║  ███╗██████╔╝██║   ██║██║   ██║
+ ██║   ██║██╔══██╗██║   ██║██║▄▄ ██║
+ ╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝
+  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚══▀▀═╝
+      chat · powered by groq</pre>
+
+      <div style="font-family:JetBrains Mono,monospace; font-size:0.7rem; color:#8b949e;
+           letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.5rem;">
+        ▶ &nbsp;groq api key
+      </div>
+    </div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+    # centraliza o input
+    _, col_center, _ = st.columns([0.15, 0.7, 0.15])
+    with col_center:
+        api_input = st.text_input(
+            "api_key_input",
+            placeholder="gsk_••••••••••••••••••••••••••••••••",
+            type="password",
+            label_visibility="collapsed",
+            key="api_key_field"
+        )
+        col_btn, col_link = st.columns([0.45, 0.55])
+        with col_btn:
+            entrar = st.button("AUTENTICAR ↵", use_container_width=True)
+        with col_link:
+            st.markdown("""
+<div style='font-family:JetBrains Mono,monospace; font-size:0.63rem; color:#484f58;
+     padding-top:0.75rem; padding-left:0.5rem;'>
+sem chave? &nbsp;<a href="https://console.groq.com" target="_blank"
+style="color:#58a6ff; text-decoration:none;">console.groq.com ↗</a>
+</div>
+""", unsafe_allow_html=True)
+
+        if entrar and api_input:
+            # valida a chave fazendo uma chamada real
+            with st.spinner("▶ validando chave..."):
+                try:
+                    test_llm = ChatGroq(
+                        model="llama-3.1-8b-instant",
+                        max_tokens=10,
+                        api_key=api_input
+                    )
+                    test_llm.invoke([HumanMessage(content="hi")])
+                    st.session_state.api_key = api_input
+                    st.session_state.authenticated = True
+                    st.rerun()
+                except Exception:
+                    st.error("chave inválida ou sem conexão — tente novamente")
+        elif entrar and not api_input:
+            st.error("insira sua API key antes de continuar")
+
+    st.stop()  # não renderiza nada mais enquanto não autenticado
+
+# ══════════════════════════════════════════════════════════
+# CHAT — exibido após autenticação
+# ══════════════════════════════════════════════════════════
 
 # ── SIDEBAR ──────────────────────────────────────────────
 with st.sidebar:
@@ -329,26 +379,32 @@ with st.sidebar:
         "modelo",
         ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma-2-9b-it"],
     )
-
     st.markdown("<br>", unsafe_allow_html=True)
     temperature = st.slider("criatividade", 0.0, 1.0, 0.7, 0.1)
     max_tokens  = st.slider("tokens máx.", 256, 2048, 1024, 256)
-
     st.divider()
 
     if st.button("▶ limpar sessão", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
-    st.divider()
+    if st.button("⏻ sair / trocar chave", use_container_width=True):
+        st.session_state.authenticated = False
+        st.session_state.api_key = ""
+        st.session_state.messages = []
+        st.rerun()
 
+    st.divider()
     n_msgs = len(st.session_state.messages)
     now    = datetime.now().strftime("%H:%M:%S")
+    # mascara a chave: mostra só os últimos 4 chars
+    key_masked = "••••" + st.session_state.api_key[-4:] if len(st.session_state.api_key) >= 4 else "••••"
     st.markdown(f"""
 <div style='font-family:JetBrains Mono,monospace; font-size:0.66rem; line-height:2.4; letter-spacing:0.08em;'>
 <span style='color:#484f58;'>msgs&nbsp;&nbsp;&nbsp;&nbsp;</span><span style='color:#e2e8f0;'>{n_msgs:03d}</span><br>
 <span style='color:#484f58;'>modelo&nbsp;&nbsp;</span><span style='color:#e2e8f0;'>groq</span><br>
-<span style='color:#484f58;'>status&nbsp;&nbsp;</span><span style='color:#39d353;'>&#9679; online</span><br>
+<span style='color:#484f58;'>status&nbsp;&nbsp;</span><span style='color:#39d353;'>&#9679; autenticado</span><br>
+<span style='color:#484f58;'>chave&nbsp;&nbsp;&nbsp;</span><span style='color:#e2e8f0;'>{key_masked}</span><br>
 <span style='color:#484f58;'>hora&nbsp;&nbsp;&nbsp;&nbsp;</span><span style='color:#e2e8f0;'>{now}</span>
 </div>
 """, unsafe_allow_html=True)
@@ -371,8 +427,7 @@ if not st.session_state.messages:
 <span class="dim">─────────────────────────────────────────────────────────</span><br>
 <span class="ok">  [  OK  ]</span>  <span class="msg">iniciando <strong>groq-chat</strong>.service</span><br>
 <span class="ok">  [  OK  ]</span>  <span class="msg">carregando modelo llm</span><br>
-<span class="ok">  [  OK  ]</span>  <span class="msg">conectando à api groq</span><br>
-<span class="warn">  [ WARN ]</span>  <span class="msg">sem histórico anterior</span><br>
+<span class="ok">  [  OK  ]</span>  <span class="msg">api key autenticada com sucesso</span><br>
 <span class="info">  [ INFO ]</span>  <span class="msg">sessão iniciada — pronto para input</span><br>
 <span class="dim">─────────────────────────────────────────────────────────</span><br>
 <br>
@@ -385,24 +440,19 @@ else:
         if isinstance(msg, HumanMessage):
             st.markdown(f"""
 <div class="term-line">
-  <div class="term-prompt-user">
-    user@groq-chat:~$<span class="term-tag-user">INPUT #{idx:03d}</span>
-  </div>
+  <div class="term-prompt-user">user@groq-chat:~$<span class="term-tag-user">INPUT #{idx:03d}</span></div>
   <div class="term-text-user">{msg.content}</div>
 </div>
 """, unsafe_allow_html=True)
         else:
             st.markdown(f"""
 <div class="term-line">
-  <div class="term-prompt-ai">
-    assistant@groq:~$<span class="term-tag-ai">OUTPUT #{idx:03d}</span>
-  </div>
+  <div class="term-prompt-ai">assistant@groq:~$<span class="term-tag-ai">OUTPUT #{idx:03d}</span></div>
   <div class="term-text-ai">{msg.content}</div>
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown("</div></div>", unsafe_allow_html=True)
-
 st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
 
 # ── INPUT ROW ────────────────────────────────────────────
@@ -427,21 +477,18 @@ with col_btn:
 
 # ── PROCESS ──────────────────────────────────────────────
 if (submit_button or user_input) and user_input:
-    if not st.session_state.api_key:
-        st.error("erro: GROQ_API_KEY não encontrada — configure no arquivo .env")
-    else:
-        st.session_state.messages.append(HumanMessage(content=user_input))
-        try:
-            llm = ChatGroq(
-                model=model_name,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                api_key=st.session_state.api_key
-            )
-            with st.spinner("▶ processando..."):
-                response = llm.invoke(st.session_state.messages)
-            st.session_state.messages.append(AIMessage(content=response.content))
-            st.rerun()
-        except Exception as e:
-            st.session_state.messages.pop()
-            st.error(f"erro: {str(e)}")
+    st.session_state.messages.append(HumanMessage(content=user_input))
+    try:
+        llm = ChatGroq(
+            model=model_name,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            api_key=st.session_state.api_key
+        )
+        with st.spinner("▶ processando..."):
+            response = llm.invoke(st.session_state.messages)
+        st.session_state.messages.append(AIMessage(content=response.content))
+        st.rerun()
+    except Exception as e:
+        st.session_state.messages.pop()
+        st.error(f"erro: {str(e)}")
