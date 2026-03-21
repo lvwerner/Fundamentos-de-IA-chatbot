@@ -1,101 +1,86 @@
-# 🤖 Chat IA - Interface Streamlit
+# Chat IA — Interface Streamlit + Groq
 
-Uma interface bonita e moderna para conversar com modelos de IA usando Groq API e LangChain.
+Interface de chat com modelos de linguagem via Groq API, construída com Streamlit e LangChain.
 
-## 🎨 Características
+---
 
-✨ **Interface Moderna**
-- Design limpo e responsivo com Streamlit
-- Animações suaves e efeitos visuais
-- Chat histórico persistente
+## ✅ O que você precisa fazer antes de rodar
 
-⚡ **Modelos Rápidos**
-- Llama 3.3 70b (recomendado - mais atualizado)
-- Llama 3.1 8b (mais rápido)
-- Gemma 2 9b (alternativa rápida)
+### 1. Criar uma conta Groq e obter sua chave de API
 
-🎛️ **Controles Ajustáveis**
-- Controlar nível de criatividade (temperatura)
-- Ajustar tamanho máximo das respostas
-- Limpar histórico de conversa
+Acesse **https://console.groq.com**, crie uma conta gratuita e gere uma chave de API (API Key).
 
-## 📋 Pré-requisitos
+### 2. Configurar a chave no projeto
 
-- Python 3.8+
-- Chave de API Groq (gratuita em https://console.groq.com)
-- Dependências já instaladas (requirements.txt)
-
-## ⚙️ Instalação
-
-### 1. Configure sua chave da API
+Copie o arquivo de exemplo e cole sua chave dentro dele:
 
 ```bash
-# Copie o arquivo de exemplo
 cp .env.example .env
-
-# Edite o arquivo .env e adicione sua chave
-# GROQ_API_KEY=sua_chave_aqui
 ```
 
-### 2. Ative o ambiente virtual
+Abra o arquivo `.env` e edite a linha:
+
+```
+GROQ_API_KEY=cole_sua_chave_aqui
+```
+
+> ⚠️ **Sem essa chave o projeto não funciona.** Não compartilhe esse arquivo com ninguém.
+
+### 3. Ativar o ambiente virtual
 
 ```bash
-# No Windows
+# Windows
 myfirstproject\Scripts\activate
 
-# No macOS/Linux
+# macOS / Linux
 source myfirstproject/bin/activate
 ```
 
-### 3. Execute a aplicação
+### 4. Executar o projeto
 
 ```bash
 streamlit run app.py
 ```
 
-A interface abrirá automaticamente em `http://localhost:8501`
-
-## 🚀 Como Usar
-
-1. **Digite sua mensagem** na caixa de entrada
-2. **Clique em "Enviar"** ou pressione Enter
-3. **Aguarde a resposta** da IA
-4. **Ajuste configurações** no painel lateral conforme necessário
-
-## 🎯 Dicas
-
-- Use a **criatividade alta** (0.8-1.0) para respostas mais criativas
-- Use **criatividade baixa** (0.0-0.3) para respostas mais factuais
-- O **Mixtral** é ótimo para equilibrar velocidade e qualidade
-- Clique em **"Limpar Chat"** para começar uma nova conversa
-
-## 🔧 Personalização
-
-Edite `app.py` para:
-- Mudar cores e temas
-- Adicionar novos modelos
-- Personalizar o layout
-- Adicionar funcionalidades extras
-
-## 📚 Recursos
-
-- [Documentação Streamlit](https://docs.streamlit.io)
-- [LangChain Docs](https://python.langchain.com)
-- [Groq API](https://console.groq.com/docs)
-
-## ⚠️ Troubleshooting
-
-**Erro: "GROQ_API_KEY not found"**
-- Certifique-se que o arquivo `.env` existe e tem sua chave
-
-**Interface lenta**
-- Tente um modelo mais rápido (Llama 8b)
-- Reduza o tamanho máximo da resposta
-
-**Erro de conexão**
-- Verifique sua conexão com a internet
-- Verifique se sua chave API é válida
+O navegador abrirá automaticamente em `http://localhost:8501`.
 
 ---
 
-**Desenvolvido com ❤️ usando Streamlit, LangChain e Groq**
+## Como usar
+
+1. Digite sua mensagem na caixa de texto na parte inferior
+2. Clique em **Enviar** ou pressione **Enter**
+3. A resposta da IA aparece na tela em instantes
+4. Use o painel lateral para ajustar as configurações
+
+---
+
+## Configurações disponíveis (painel lateral)
+
+| Configuração | O que faz |
+|---|---|
+| **Modelo** | Escolhe qual IA responde. Llama 3.3 70b é o mais capaz; Llama 3.1 8b é o mais rápido |
+| **Criatividade** | Valor baixo (0.0–0.3) = respostas mais objetivas. Valor alto (0.7–1.0) = respostas mais criativas |
+| **Tokens máx.** | Controla o tamanho máximo de cada resposta |
+| **Limpar chat** | Apaga o histórico e começa uma conversa nova |
+
+---
+
+## Problemas comuns
+
+**"GROQ_API_KEY not found"**
+→ O arquivo `.env` não existe ou está sem a chave. Revise o Passo 2.
+
+**Interface lenta ou travando**
+→ Troque para o modelo `llama-3.1-8b-instant` e reduza o valor de Tokens máx.
+
+**Erro de conexão**
+→ Verifique sua internet e se a chave de API é válida no painel da Groq.
+
+---
+
+## Tecnologias usadas
+
+- [Streamlit](https://docs.streamlit.io) — interface web
+- [LangChain](https://python.langchain.com) — integração com modelos de IA
+- [Groq API](https://console.groq.com/docs) — execução dos modelos
